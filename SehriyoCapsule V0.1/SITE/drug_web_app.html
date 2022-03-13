@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drug Container</title>
+</head>
+<style>
+    *{
+        margin:0;
+        padding:0;
+    }
+    .drug-item input[type=radio]{
+        display: none;
+    }
+    .drug-item label{
+        display: inline-block;
+        justify-content: center;
+        line-height: 10vw;
+        background-repeat: no-repeat;
+        width: 20vw;
+        height: 10vw;
+        text-align: center;
+        font-size: 6vw;
+        font-family:Arial, Helvetica, sans-serif;
+        background-size: 10vw;
+        transition: all 300ms linear;
+    }
+    .drug-item:first-child label{
+        border-top-left-radius:3vw;
+        border-bottom-left-radius:3vw;
+    }
+    .drug-item:last-child label{
+        border-top-right-radius:3vw;
+        border-bottom-right-radius:3vw;
+    }
+    .drug-item input[type=radio]:checked + label {
+	    background-color:wheat;
+    }
+    .drug-select-container{
+        display: flex;
+        border-radius: 3vw;
+        width: 60vw;
+        height: 10vw;
+        margin-top: 4vw;
+        margin-left: 20vw;
+        background-color: whitesmoke;
+    }
+    .drug-info div{
+        width: 68vw;
+        margin-left: 16vw;
+    }
+    .drug-info div input,button{
+        display: block;
+        outline: none;
+        border-radius: 1vw;
+        border:none;
+        height: 8vw;
+        position:relative;
+        left: 50%;
+        margin-right: -50%;
+        transform: translateX(-50%);
+        margin-top:1vw;
+        background-color: white;
+    }
+    .drug-info div input[type=time]{
+        display:block;
+        position:static;
+        float:left;
+        left: 0;
+        margin: 1vw 0 1vw 2vw;
+        transform: translateX(0%);
+        border-radius:100%;
+        background-color: aliceblue;background-image: url('https://i.pinimg.com/originals/48/52/63/4852633f4bf8d11445d39cce2160b2f8.png');background-size:20vw;
+        width: 20vw;
+        height: 20vw;
+    }
+    .drug-info div button{
+        background-color:lightskyblue;
+        height: 8vw;
+        width: 16vw;
+        transition: all 300ms linear;
+    }
+    .drug-info div button:active{
+        width:20vw;
+        background-color:lightsteelblue;
+        transition: all 300ms linear;
+    }
+    .drug-settings{
+        display: flex;
+        flex-direction: column;
+        border-radius: 3vw;
+        width: 60vw;
+        height: 28vw;
+        margin-top: 5vw;
+        margin-left: 20vw;
+        background-color: white;
+    }
+    .drug-settings h1{
+        font-size: 4vw;
+        font-family: Arial, Helvetica, sans-serif;
+        align-self: center;
+        margin-top: 2vw;
+    }
+    .drug-settings-item{
+        display: flex;
+        align-items: center;
+        margin-left: 2.5vw;
+        margin-top: 1vw;
+    }
+    .drug-settings-item label{
+        font-size: 2.5vw;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    .drug-settings-item input{
+        width: 2vw;
+        height: 2vw;
+        margin-right: 0.5vw;
+    }
+    body{
+        height: 100vh;
+        background-repeat: no-repeat;
+        background:linear-gradient(#ddddff,#ffffff);
+    }
+</style>
+<body>
+    <div class="drug-select-container">
+        <div class="drug-item">
+            <input type="radio" name="drug-select" id="r1" checked>
+            <label for="r1" onclick="searchCheckedCell(0)">1</label>
+        </div>
+        <div class="drug-item">
+            <input type="radio" name="drug-select" id="r2">
+            <label for="r2" onclick="searchCheckedCell(1)">2</label>
+        </div>
+        <div class="drug-item">
+            <input type="radio" name="drug-select" id="r3">
+            <label for="r3" onclick="searchCheckedCell(2)">3</label>
+        </div>
+    </div>
+    <div class="drug-info">
+        <div class="container" id="first">
+            <input type="text">
+            <input type="time">
+            <input type="time">
+            <input type="time">
+            <input type="number">
+            <input type="number">
+            <button onclick="setCellProperties(0,'first')">OK</button>
+        </div>
+        <div class="container" id="second">
+            <input type="text">
+            <input type="time">
+            <input type="time">
+            <input type="time">
+            <input type="number">
+            <input type="number">
+            <button onclick="setCellProperties(1,'second')">OK</button>
+        </div>
+        <div class="container" id="third">
+            <input type="text">
+            <input type="time">
+            <input type="time">
+            <input type="time">
+            <input type="number">
+            <input type="number">
+            <button onclick="setCellProperties(2,'third')">OK</button>
+        </div>  
+    </div>
+    <div class="drug-settings">
+        <h1>Settings</h1>
+        <div class="drug-settings-item">
+            <input type="checkbox" id="safeModeChecker">
+            <label>Safemode</label>
+        </div>
+        <div class="drug-settings-item">
+            <input type="checkbox">
+            <label>Example</label>
+        </div>
+        <div class="drug-settings-item">
+            <input type="checkbox">
+            <label>Example</label>
+        </div>
+    </div>
+</body>
+<script>
+    class Cell{
+        name;
+        time=new Array('','','');
+        mounth;
+        interval;
+        date_begin;
+        constructor(){}
+    }
+    let cell = new Array(new Cell(),new Cell(),new Cell());
+
+    function closeAllDrugInfo(){
+        let drug_info_containers = document.getElementsByClassName('container');
+        for(let index = 0; index < drug_info_containers.length; index++){
+            drug_info_containers[index].hidden = true;
+        }
+    }
+    let checked = 0;
+
+    function searchCheckedCell(arg){
+        let drug_info_containers = document.getElementsByClassName('container');
+        closeAllDrugInfo();
+        checked = arg;
+        drug_info_containers[checked].hidden = false;
+    }
+    
+    function setCellProperties(cell_number, container_id){
+        let container_for_cell = document.getElementById(container_id);
+        let drug_prop = container_for_cell.children;
+        cell[cell_number].name = drug_prop[0].value;
+        cell[cell_number].time = Array(drug_prop[1].value, drug_prop[2].value, drug_prop[3].value);
+        cell[cell_number].mounth = drug_prop[4];
+        cell[cell_number].interval = drug_prop[5];
+        cell[cell_number].date_begin = new Date();
+    }
+    searchCheckedCell(0);
+
+    function waitDrugDropTime(){
+        let now = new Date();
+        let now_hours = now.getHours()<10?'0'+now.getHours():now.getHours();
+        let now_minutes = now.getMinutes()<10?'0'+now.getMinutes():now.getMinutes();
+        let now_to_str = now_hours+':'+now_minutes;
+        let cells = new Array();
+        for(let c_iter=0;c_iter<3;c_iter++){
+            let now_cell = cell[c_iter];
+            for(let t_iter=0;t_iter<3;t_iter++){
+                let now_time = now_cell.time[t_iter];
+                let time_to_str = now_time;
+                console.log('cell '+(c_iter+1));
+                console.log('timer '+ (t_iter+1));
+
+                let is_safe = false;
+                if (document.getElementById("safeModeChecker").checked){
+                    is_safe = true;
+                }
+
+                if(time_to_str == now_to_str){
+                    if (cells.length == 0){
+                        if(is_safe){
+                            cells.push("S"); //Safe
+                        }
+                        else {
+                            cells.push("U"); //Unsafe
+                        }
+                    }
+                        
+                    cells.push(c_iter);
+                    break; //Добавил break
+                }
+            }
+        }
+        if(cells.length>0){
+            let req_txt = 'O'+cells.toString().replace(/[\s.,%]/g, '');
+            var oReq = new XMLHttpRequest();
+            oReq.open('get', req_txt, true);
+            oReq.send();
+
+            console.log(req_txt);
+        }
+    }
+    setInterval(waitDrugDropTime, 1000);
+</script>
+</html>
